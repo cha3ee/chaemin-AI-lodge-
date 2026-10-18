@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>목소리 편지 | Voice Messages</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=31">
+</head>
+<body class="subpage-body voice-page">
+
+    <header class="top-nav subpage-nav">
+        <a href="/" class="back-btn" data-kr="← 메인 화면" data-en="← Home">← Home</a>
+        <span style="font-size: 18px; font-weight: bold; margin-left: 20px;">Logged in as: {{ current_user.username }}</span>
+        <a href="/logout" class="back-btn logout-btn" data-kr="로그아웃" data-en="Log out">Log out</a>
+        <button id="lang-toggle" class="lang-btn">한국어 / English</button>
+    </header>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}<div class="flash-banner">{{ messages[0] }}</div>{% endif %}
+    {% endwith %}
+
+    <main class="voice-layout">
+        <section class="voice-left-pane">
+            <h1 class="pane-title left-title-spacer" aria-hidden="true">&nbsp;</h1>
+            
+            <div class="cards-wrapper">
+                <div class="action-card upload-card" onclick="openModal('upload-voice-modal')">
+                    <h2 data-kr="음성 녹음 업로드" data-en="upload recording">upload recording</h2>
+                    <p data-kr="기기에서 오디오를 선택하거나 직접 녹음하세요" data-en="Select audio file or record straight in app">Select audio file or record straight in app</p>
+                    <span class="click-badge" data-kr="클릭하여 업로드" data-en="Click to upload">Click to upload</span>
+                </div>
+
+                <div class="action-card share-card" onclick="openModal('share-voice-modal')">
+                    <h2 data-kr="음성 편지 공유하기" data-en="share recording">share recording</h2>
+                    <p data-kr="가족에게 따뜻한 목소리 편지를 전해보세요" data-en="Share a warm voice message with family">Share a warm voice message with family</p>
+                    <span class="click-badge" data-kr="클릭하여 공유" data-en="Click to share">Click to share</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="voice-right-pane">
+            <h1 class="pane-title" data-kr="목소리 상자" data-en="voice messages">voice messages</h1>
+            
+            <div class="gallery-wrapper">
+                <div class="cassette-grid">
+                    {% if voices %}
+                        {% for v in voices %}
+                        {% set sender_name = "Anonymous" if v.is_anonymous else v.sender.username %}
+                        <div class="cassette-card" 
+                             data-src="{{ url_for('static', filename='uploads/voice/' + v.filename) }}"
+                             data-sender="From: {{ sender_name }}"
+                             data-date="{{ v.created_at|localdate('%d %b %Y') }}"
+                             onclick="openAudioPlayerFromCard(this)">
+                            <form action="/toggle_favorite/voice/{{ v.id }}" method="POST" onclick="event.stopPropagation();">
+                                <button type="submit" class="favorite-heart {{ 'favorited' if v.is_favorited }}" title="Favorite">♥</button>
+                            </form>
+                            <img src="{{ url_for('static', filename='images/cassette.png') }}" alt="Cassette Tape" class="cassette-bg">
+                            <div class="cassette-navy-badge">
+                                <span class="cassette-sender">From: {{ sender_name }}</span>
+                                <span class="cassette-date">{{ v.created_at|localdate('%d %b %Y') }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="text-align: center; font-size: 20px; color: #555; grid-column: 1 / -1; margin-top: 40px;">No voice recordings saved yet!</p>
+                    {% endif %}
+                </div>
+
+                <div class="gallery-nav-bar">
+                    <button class="arrow-btn prev-btn">←</button>
+                    <span class="page-indicator">Page 1 of 1</span>
+                    <button class="arrow-btn next-btn">→</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal 1: Upload Voice -->
+    <div id="upload-voice-modal" class="modal-overlay" onclick="closeModalOnOuter('upload-voice-modal', event)">
+        <div class="modal-box paper-style">
+            <button class="close-modal-btn" onclick="closeModal('upload-voice-modal')">✕</button>
+            <h2 class="modal-title" data-kr="음성 녹음 업로드" data-en="upload recording">upload recording</h2>
+            
+            <form class="modal-form" method="POST" action="/voice" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Select Audio File:</label>
+                    <input type="file" name="voice_file" accept="audio/*" required class="file-input">
+                </div>
+                <div class="form-group recorder">
+                    <label data-kr="또는 지금 바로 녹음하기:" data-en="Or record now:">Or record now:</label>
+                    <div class="recorder-controls">
+                        <button type="button" class="record-btn">● Record</button>
+                        <span class="record-timer">0:00</span>
+                    </div>
+                    <audio class="record-preview" controls hidden></audio>
+                    <p class="record-status"></p>
+                </div>
+                <div class="form-group">
+                    <label>Title / Note:</label>
+                    <input type="text" name="title" placeholder="Title..." class="paper-input">
+                </div>
+                <button type="submit" class="stamp-btn">UPLOAD</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Share Voice -->
+    <div id="share-voice-modal" class="modal-overlay" onclick="closeModalOnOuter('share-voice-modal', event)">
+        <div class="modal-box paper-style">
+            <button class="close-modal-btn" onclick="closeModal('share-voice-modal')">✕</button>
+            <h2 class="modal-title" data-kr="음성 편지 공유하기" data-en="share recording">share recording</h2>
+            
+            <form class="modal-form" method="POST" action="/voice" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Select Audio File:</label>
+                    <input type="file" name="voice_file" accept="audio/*" required class="file-input">
+                </div>
+                <div class="form-group recorder">
+                    <label data-kr="또는 지금 바로 녹음하기:" data-en="Or record now:">Or record now:</label>
+                    <div class="recorder-controls">
+                        <button type="button" class="record-btn">● Record</button>
+                        <span class="record-timer">0:00</span>
+                    </div>
+                    <audio class="record-preview" controls hidden></audio>
+                    <p class="record-status"></p>
+                </div>
+                <div class="form-group inline-row">
+                    <div class="inline-field">
+                        <label>To (Username):</label>
+                        <input type="text" name="recipient" placeholder="e.g. Mom" required class="paper-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Title / Note:</label>
+                    <input type="text" name="title" placeholder="Title..." class="paper-input">
+                </div>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="is_anonymous">
+                        <span>Send Anonymously</span>
+                    </label>
+                </div>
+                <button type="submit" class="stamp-btn">SHARE</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 3: Audio Player Lightbox -->
+    <div id="player-modal" class="modal-overlay" onclick="closeModalOnOuter('player-modal', event)">
+        <div class="modal-box player-box" onclick="event.stopPropagation();">
+            <button class="close-modal-btn" onclick="closeModal('player-modal')">✕</button>
+            <div class="player-content">
+                <div class="player-cassette-frame">
+                    <img src="{{ url_for('static', filename='images/cassette.png') }}" alt="Cassette Player">
+                </div>
+                <div class="player-meta">
+                    <span id="player-sender" class="player-sender-badge">From: Grandma</span>
+                    <span id="player-date" class="player-date-text">18 Oct 2026</span>
+                </div>
+                <div class="audio-controls-wrap">
+                    <audio id="audio-element" controls style="width: 100%; margin-top: 15px;"></audio>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+                modal.style.display = 'none';
+            }
+        }
+
+        function closeModalOnOuter(modalId, event) {
+            if (event.target.id === modalId) {
+                closeModal(modalId);
+            }
+        }
+
+        // In-browser recording: the finished clip is put into the form's file input,
+        // so it uploads through the same /voice route as a chosen file.
+        const MAX_RECORDING_SECONDS = 300;
+
+        function isKorean() {
+            return document.documentElement.lang === 'ko';
+        }
+
+        function setupRecorder(recorderEl) {
+            const form = recorderEl.closest('form');
+            const fileInput = form.querySelector('input[name="voice_file"]');
+            const button = recorderEl.querySelector('.record-btn');
+            const timer = recorderEl.querySelector('.record-timer');
+            const preview = recorderEl.querySelector('.record-preview');
+            const status = recorderEl.querySelector('.record-status');
+            let mediaRecorder = null;
+            let chunks = [];
+            let seconds = 0;
+            let tick = null;
+
+            function updateButton() {
+                const recording = mediaRecorder && mediaRecorder.state === 'recording';
+                if (recording) {
+                    button.textContent = isKorean() ? '■ 멈추기' : '■ Stop';
+                } else {
+                    button.textContent = isKorean() ? '● 녹음' : '● Record';
+                }
+                button.classList.toggle('recording', !!recording);
+            }
+
+            function showTime() {
+                timer.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+            }
+
+            async function start() {
+                if (!navigator.mediaDevices || !window.MediaRecorder) {
+                    status.textContent = isKorean()
+                        ? '이 브라우저에서는 녹음을 지원하지 않습니다. 파일을 선택해 주세요.'
+                        : 'Recording is not supported in this browser. Please choose a file instead.';
+                    return;
+                }
+                let stream;
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                } catch (e) {
+                    status.textContent = isKorean()
+                        ? '마이크 사용이 허용되지 않았습니다. 브라우저 설정에서 마이크를 허용해 주세요.'
+                        : 'Microphone access was blocked. Please allow the microphone in your browser settings.';
+                    return;
+                }
+
+                chunks = [];
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.addEventListener('dataavailable', e => {
+                    if (e.data.size > 0) chunks.push(e.data);
+                });
+                mediaRecorder.addEventListener('stop', () => {
+                    stream.getTracks().forEach(track => track.stop());
+                    clearInterval(tick);
+                    const type = mediaRecorder.mimeType || 'audio/webm';
+                    const ext = type.includes('mp4') ? 'm4a' : type.includes('ogg') ? 'ogg' : 'webm';
+                    const blob = new Blob(chunks, { type });
+                    const file = new File([blob], `recording.${ext}`, { type });
+
+                    const transfer = new DataTransfer();
+                    transfer.items.add(file);
+                    fileInput.files = transfer.files;
+
+                    preview.src = URL.createObjectURL(blob);
+                    preview.hidden = false;
+                    status.textContent = isKorean()
+                        ? '녹음 완료! 들어보고 아래 버튼을 눌러 저장하세요.'
+                        : 'Recording ready! Listen back, then press the button below to save it.';
+                    updateButton();
+                });
+
+                mediaRecorder.start();
+                seconds = 0;
+                showTime();
+                preview.hidden = true;
+                status.textContent = isKorean() ? '녹음 중...' : 'Recording...';
+                tick = setInterval(() => {
+                    seconds += 1;
+                    showTime();
+                    if (seconds >= MAX_RECORDING_SECONDS) mediaRecorder.stop();
+                }, 1000);
+                updateButton();
+            }
+
+            button.addEventListener('click', () => {
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                } else {
+                    start();
+                }
+            });
+
+            const langBtn = document.getElementById('lang-toggle');
+            if (langBtn) langBtn.addEventListener('click', updateButton);
+            updateButton();
+        }
+
+        document.querySelectorAll('.recorder').forEach(setupRecorder);
+
+        function openAudioPlayerFromCard(card) {
+            const player = document.getElementById('audio-element');
+            player.src = card.getAttribute('data-src');
+            document.getElementById('player-sender').textContent = card.getAttribute('data-sender');
+            document.getElementById('player-date').textContent = card.getAttribute('data-date');
+            openModal('player-modal');
+            player.play();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# Secrets
+.env
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Local data (database + user uploads)
+instance/
+static/uploads/photos/*
+static/uploads/voice/*
+!static/uploads/photos/.gitkeep
+!static/uploads/voice/.gitkeep

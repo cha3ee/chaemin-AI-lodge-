@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 스크랩북 | My Mood Board</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gamja+Flower&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=401">
+</head>
+<body class="subpage-body board-page">
+
+    <!-- Top Navigation Header -->
+    <nav class="subpage-nav">
+        <a href="/" class="back-btn" data-kr="← 홈으로" data-en="← Home">← Home</a>
+        
+        <div class="top-nav-controls">
+            <button id="lang-toggle" class="lang-btn">한국어 / English</button>
+            <a href="/logout" class="auth-btn" data-kr="로그아웃" data-en="Log out">Log out</a>
+        </div>
+    </nav>
+
+    <main class="board-container">
+        
+        <!-- Left-Aligned Form Column (Pin Notes & AI Generator) -->
+        <div class="forms-column">
+            
+            <!-- 1. Pin Personal Note Box -->
+            <div class="pin-form-container">
+                <form action="/board" method="POST" class="pin-note-form">
+                    <label for="content" class="pin-label" data-kr="개인 메모 핀하기:" data-en="Pin Personal Note:">Pin Personal Note:</label>
+                    <textarea id="content" name="content" placeholder="Write a note to pin on your board..." required></textarea>
+                    <input type="hidden" name="item_type" value="sticky">
+                    <button type="submit" class="pin-submit-btn" data-kr="게시판에 핀하기 📌" data-en="PIN TO BOARD 📌">PIN TO BOARD 📌</button>
+                </form>
+            </div>
+
+            <!-- 2. AI Sticker Generator Box -->
+            <div class="pin-form-container ai-gen-container">
+                <form action="/generate_decoration" method="POST" class="pin-note-form ai-form">
+                    <label for="prompt" class="pin-label" data-kr="✨ AI 스티커 만들기:" data-en="✨ AI Sticker Generator:">✨ AI Sticker Generator:</label>
+                    <input type="text" id="prompt" name="prompt" placeholder="e.g. picnic apple, coffee cup, vintage stamp" required class="ai-input">
+                    <button type="submit" class="pin-submit-btn ai-btn" data-kr="스티커 생성하기 🎨" data-en="GENERATE STICKER 🎨">GENERATE STICKER 🎨</button>
+                </form>
+            </div>
+
+        </div>
+
+        <!-- Cork Board Items Canvas (Free Drag & Transform Surface) -->
+        <div class="board-items-surface" id="board-surface">
+            
+            <!-- AI Generated Draggable/Rotatable/Resizable Stickers -->
+            {% for item in board_items if item.item_type == 'decoration' %}
+            <div class="transformable-item ai-sticker-card" 
+                 data-item-id="{{ item.id }}"
+                 data-x="{{ item.pos_x }}"
+                 data-y="{{ item.pos_y }}"
+                 data-rotation="{{ item.rotation }}"
+                 data-scale="{{ item.scale }}">
+                
+                <div class="transform-controls">
+                    <span class="drag-handle" title="Drag to move">🖐️</span>
+                    <span class="rotate-handle" title="Rotate">🔄</span>
+                    <span class="scale-handle" title="Resize">📐</span>
+                </div>
+
+                <img src="{{ url_for('static', filename='uploads/decorations/' + item.file_ref) }}" alt="{{ item.content }}" draggable="false">
+                <span class="sticker-label">✨ {{ item.content }}</span>
+            </div>
+            {% endfor %}
+
+            <!-- Personal Pinned Sticky Notes (Clipped Paper) -->
+            {% for item in board_items if item.item_type == 'sticky' %}
+            <div class="clipped-note-card">
+                <div class="note-text-body">{{ item.content }}</div>
+                <span class="note-timestamp">{{ item.created_at.strftime('%d %b %Y') }}</span>
+            </div>
+            {% endfor %}
+
+            <!-- Favorited Notes -->
+            {% for note in fav_notes %}
+            <div class="clipped-note-card favorited-style">
+                <span class="fav-badge">♥ FAVORITED NOTE</span>
+                <div class="note-text-body">{{ note.content }}</div>
+                <span class="note-sender">From: {{ note.sender.username if not note.is_anonymous else 'Anonymous' }}</span>
+            </div>
+            {% endfor %}
+
+            <!-- Favorited Photos -->
+            {% for photo in fav_photos %}
+            <div class="board-polaroid-card">
+                <div class="pin-dot orange-pin"></div>
+                <div class="board-photo-frame">
+                    <img src="{{ url_for('static', filename='uploads/photos/' + photo.filename) }}" alt="Photo">
+                </div>
+                <div class="board-photo-meta">
+                    <span class="photo-title">{{ photo.caption or 'Memory Photo' }}</span>
+                    <span class="photo-sender">From: {{ photo.sender.username if not photo.is_anonymous else 'Anonymous' }}</span>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Favorited Voice Recordings -->
+            {% for voice in fav_voices %}
+            <div class="cassette-board-card">
+                <span class="cassette-fav-tag">♥ VOICE NOTE</span>
+                <audio controls src="{{ url_for('static', filename='uploads/voice/' + voice.filename) }}"></audio>
+                <span class="cassette-board-sender">From: {{ voice.sender.username if not voice.is_anonymous else 'Anonymous' }}</span>
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}?v=401"></script>
+</body>
+</html>

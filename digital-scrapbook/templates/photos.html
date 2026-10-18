@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사진첩 | Photos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=31">
+</head>
+<body class="subpage-body photos-page">
+
+    <!-- Top Navigation Header -->
+    <header class="top-nav subpage-nav">
+        <a href="/" class="back-btn" data-kr="← 메인 화면" data-en="← Home">← Home</a>
+        <span style="font-size: 18px; font-weight: bold; margin-left: 20px;">Logged in as: {{ current_user.username }}</span>
+        <a href="/logout" class="back-btn logout-btn" data-kr="로그아웃" data-en="Log out">Log out</a>
+        <button id="lang-toggle" class="lang-btn">한국어 / English</button>
+    </header>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}<div class="flash-banner">{{ messages[0] }}</div>{% endif %}
+    {% endwith %}
+
+    <main class="photos-layout">
+        <section class="photos-left-pane">
+            <h1 class="pane-title left-title-spacer" aria-hidden="true">&nbsp;</h1>
+            
+            <div class="cards-wrapper">
+                <div class="action-card upload-card" onclick="openModal('upload-photo-modal')">
+                    <span class="card-icon text-icon">UPLOAD</span>
+                    <h2 data-kr="사진 업로드" data-en="upload photo">upload photo</h2>
+                    <p data-kr="기기에서 사진을 선택하여 앨범에 추가하세요" data-en="Select a photo from device to add to album">Select a photo from device to add to album</p>
+                    <span class="click-badge" data-kr="클릭하여 업로드" data-en="Click to upload">Click to upload</span>
+                </div>
+
+                <div class="action-card share-card" onclick="openModal('share-photo-modal')">
+                    <span class="card-icon text-icon">SHARE</span>
+                    <h2 data-kr="사진 공유하기" data-en="share photo">share photo</h2>
+                    <p data-kr="소중한 추억 사진을 가족과 함께 공유해보세요" data-en="Share a cherished memory photo with family">Share a cherished memory photo with family</p>
+                    <span class="click-badge" data-kr="클릭하여 공유" data-en="Click to share">Click to share</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="photos-right-pane">
+            <h1 class="pane-title" data-kr="가족 사진첩" data-en="family photos">family photos</h1>
+            
+            <div class="gallery-wrapper">
+                <div class="photo-grid">
+                    {% if photos %}
+                        {% for photo in photos %}
+                        {% set sender_name = "Anonymous" if photo.is_anonymous else photo.sender.username %}
+                        <div class="polaroid-card" 
+                             data-src="{{ url_for('static', filename='uploads/photos/' + photo.filename) }}"
+                             data-tag="From: {{ sender_name }}"
+                             data-caption="{{ photo.caption or 'Memory Photo' }}"
+                             data-date="{{ photo.created_at|localdate('%d %b %Y') }}"
+                             onclick="openPhotoViewer(this)">
+                            <form action="/toggle_favorite/photo/{{ photo.id }}" method="POST" onclick="event.stopPropagation();">
+                                <button type="submit" class="favorite-heart {{ 'favorited' if photo.is_favorited }}" title="Favorite">♥</button>
+                            </form>
+                            <div class="photo-frame">
+                                <img src="{{ url_for('static', filename='uploads/photos/' + photo.filename) }}" alt="Polaroid">
+                            </div>
+                            <div class="polaroid-caption">
+                                <span class="photo-tag">From: {{ sender_name }}</span>
+                                <span class="photo-date">{{ photo.created_at|localdate('%d %b %Y') }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="text-align: center; font-size: 20px; color: #555; grid-column: 1 / -1; margin-top: 40px;">No photos uploaded yet!</p>
+                    {% endif %}
+                </div>
+
+                <div class="gallery-nav-bar">
+                    <button class="arrow-btn prev-btn">←</button>
+                    <span class="page-indicator">Page 1 of 1</span>
+                    <button class="arrow-btn next-btn">→</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal 1: Upload Photo -->
+    <div id="upload-photo-modal" class="modal-overlay" onclick="closeModalOnOuter('upload-photo-modal', event)">
+        <div class="modal-box paper-style">
+            <button class="close-modal-btn" onclick="closeModal('upload-photo-modal')">✕</button>
+            <h2 class="modal-title" data-kr="사진 업로드" data-en="upload photo">upload photo</h2>
+            
+            <form class="modal-form" method="POST" action="/photos" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Select Photo:</label>
+                    <input type="file" name="photo_file" accept="image/*" required class="file-input">
+                </div>
+                <div class="form-group">
+                    <label>Caption:</label>
+                    <input type="text" name="caption" placeholder="Caption..." class="paper-input">
+                </div>
+                <button type="submit" class="stamp-btn">UPLOAD</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Share Photo -->
+    <div id="share-photo-modal" class="modal-overlay" onclick="closeModalOnOuter('share-photo-modal', event)">
+        <div class="modal-box paper-style">
+            <button class="close-modal-btn" onclick="closeModal('share-photo-modal')">✕</button>
+            <h2 class="modal-title" data-kr="사진 공유하기" data-en="share photo">share photo</h2>
+            
+            <form class="modal-form" method="POST" action="/photos" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Select Photo:</label>
+                    <input type="file" name="photo_file" accept="image/*" required class="file-input">
+                </div>
+                <div class="form-group inline-row">
+                    <div class="inline-field">
+                        <label>To (Username):</label>
+                        <input type="text" name="recipient" placeholder="e.g. Mom" required class="paper-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Caption:</label>
+                    <input type="text" name="caption" placeholder="Caption..." class="paper-input">
+                </div>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="is_anonymous">
+                        <span>Send Anonymously</span>
+                    </label>
+                </div>
+                <button type="submit" class="stamp-btn">SHARE</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lightbox Viewer Modal -->
+    <div id="viewer-modal" class="modal-overlay fullscreen-overlay" onclick="closeModalOnOuter('viewer-modal', event)">
+        <button class="fullscreen-close-btn" onclick="closeModal('viewer-modal')">✕</button>
+        <div class="fullscreen-viewer-content" onclick="event.stopPropagation();">
+            <div class="fullscreen-media-box">
+                <img id="viewer-img" src="" alt="Full View">
+            </div>
+            <div class="fullscreen-details">
+                <span id="viewer-tag" class="fullscreen-badge"></span>
+                <h2 id="viewer-caption" class="fullscreen-caption"></h2>
+                <span id="viewer-date" class="fullscreen-date"></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+                modal.style.display = 'none';
+            }
+        }
+
+        function closeModalOnOuter(modalId, event) {
+            if (event.target.id === modalId) {
+                closeModal(modalId);
+            }
+        }
+
+        function openPhotoViewer(card) {
+            document.getElementById('viewer-img').src = card.getAttribute('data-src');
+            document.getElementById('viewer-tag').textContent = card.getAttribute('data-tag');
+            document.getElementById('viewer-caption').textContent = card.getAttribute('data-caption');
+            document.getElementById('viewer-date').textContent = card.getAttribute('data-date');
+            openModal('viewer-modal');
+        }
+    </script>
+</body>
+</html>

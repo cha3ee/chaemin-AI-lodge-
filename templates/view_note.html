@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>편지 보기 | View Note</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .note-page-bg {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #f4ece1;
+        }
+
+        .stationery-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 560px;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e0e0e0;
+            font-family: monospace, monospace;
+            position: relative;
+        }
+
+        .back-btn-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #2a9d8f;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .back-btn-link:hover {
+            text-decoration: underline;
+        }
+
+        .note-field {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c221e;
+        }
+
+        .note-field label {
+            min-width: 65px;
+        }
+
+        .underline-value {
+            flex-grow: 1;
+            border-bottom: 1px dotted #a0a0a0;
+            padding-bottom: 2px;
+            color: #333;
+            font-weight: normal;
+        }
+
+        .lined-paper-body {
+            margin-top: 25px;
+            min-height: 220px;
+            line-height: 32px;
+            font-size: 17px;
+            color: #2c221e;
+            background: repeating-linear-gradient(
+                transparent,
+                transparent 31px,
+                #e8e8e8 31px,
+                #e8e8e8 32px
+            );
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            padding: 0 6px;
+        }
+    </style>
+</head>
+<body class="note-page-bg">
+
+    <div class="stationery-card">
+        <a href="/notes" class="back-btn-link">← Back to Inbox</a>
+
+        <div class="note-field">
+            <label>To:</label>
+            <div class="underline-value">{{ note.recipient_username }}</div>
+        </div>
+
+        <div class="note-field">
+            <label>From:</label>
+            <div class="underline-value">{{ "Anonymous" if note.is_anonymous else note.sender.username }}</div>
+            {% if note.is_anonymous %}
+                <span style="font-size: 14px; color: #777; font-weight: normal; margin-left: 10px;">[Anonymous]</span>
+            {% endif %}
+        </div>
+
+        <div class="note-field">
+            <label>Date:</label>
+            <div class="underline-value">{{ note.created_at|localdate('%d %b %Y') }}</div>
+        </div>
+
+        <div class="lined-paper-body">{{ note.content }}</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>편지함 | Notes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=102">
+    <style>
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center; align-items: center;
+        }
+
+        .letter-modal-paper {
+            background: #ffffff;
+            width: 90%; max-width: 520px;
+            padding: 35px; border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            position: relative; box-sizing: border-box;
+            border: 1px solid #e0e0e0; font-family: monospace, monospace;
+        }
+
+        .close-letter-btn {
+            position: absolute; top: 15px; right: 20px;
+            background: none; border: none; font-size: 22px;
+            font-weight: bold; color: #8c7a6b; cursor: pointer;
+        }
+
+        .modal-field {
+            display: flex; align-items: center; margin-bottom: 12px;
+            font-size: 18px; font-weight: bold; color: #2c221e;
+        }
+
+        .modal-field label { min-width: 65px; }
+
+        .underline-value {
+            flex-grow: 1; border-bottom: 1px dotted #a0a0a0;
+            padding-bottom: 2px; color: #333; font-weight: normal;
+        }
+
+        .modal-lined-body {
+            margin-top: 15px; min-height: 180px; max-height: 300px;
+            overflow-y: auto; line-height: 32px; font-size: 16px; color: #2c221e;
+            background: repeating-linear-gradient(transparent, transparent 31px, #e8e8e8 31px, #e8e8e8 32px);
+            white-space: pre-wrap; word-wrap: break-word; padding: 0 4px;
+        }
+
+        .fav-btn-inline {
+            background: none; border: none; font-size: 20px; cursor: pointer; color: #ccc;
+        }
+        .fav-btn-inline.active { color: #d90429; }
+    </style>
+</head>
+<body class="subpage-body notes-page">
+
+    <header class="top-nav subpage-nav">
+        <a href="/" class="back-btn" data-kr="← 메인 화면" data-en="← Home">← Home</a>
+        <span style="font-size: 18px; font-weight: bold; margin-left: 20px;">Logged in as: {{ current_user.username }}</span>
+        <a href="/logout" class="back-btn logout-btn" data-kr="로그아웃" data-en="Log out">Log out</a>
+        <button id="lang-toggle" class="lang-btn">한국어 / English</button>
+    </header>
+
+    <main class="split-layout">
+        <section class="left-pane">
+            <h1 class="pane-title" data-kr="받은 편지함" data-en="received notes">received notes</h1>
+            <div class="envelope-grid-container">
+                <div class="envelope-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
+                    {% if notes %}
+                        {% for note in notes %}
+                        {% set sender_display = "Anonymous" if note.is_anonymous else note.sender.username %}
+                        <div class="envelope-card" 
+                             style="cursor: pointer; background: #fdfbf7; padding: 15px; border-radius: 8px; border: 1px solid #ddd; width: 180px; position: relative;"
+                             data-to="{{ current_user.username }}"
+                             data-from="{{ sender_display }}"
+                             data-date="{{ note.created_at|localdate('%d %b %Y') }}"
+                             data-content="{{ note.content }}"
+                             data-anon="{{ 'true' if note.is_anonymous else 'false' }}"
+                             onclick="openEnvelope(this)">
+                            
+                            <form action="/toggle_favorite/note/{{ note.id }}" method="POST" style="position: absolute; top: 8px; right: 8px;" onclick="event.stopPropagation();">
+                                <button type="submit" class="fav-btn-inline {{ 'active' if note.is_favorited }}">♥</button>
+                            </form>
+
+                            <img src="{{ url_for('static', filename='images/envelope.png') }}" alt="Envelope" style="width: 100%; height: auto;">
+                            <div style="margin-top: 8px; font-size: 13px;">
+                                <strong>From:</strong> {{ sender_display }}<br>
+                                <span style="color: #777;">{{ note.created_at|localdate('%d %b %Y') }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="font-size: 18px; color: #555;">No notes received yet!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <section class="right-pane">
+            <h1 class="pane-title" data-kr="편지 쓰기" data-en="send note">send note</h1>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}<p style="color: green; text-align: center;">{{ messages[0] }}</p>{% endif %}
+            {% endwith %}
+            <form class="send-note-form" method="POST" action="/notes">
+                <div class="form-group inline">
+                    <label>To:</label>
+                    <input type="text" name="recipient" placeholder="Recipient Username" required>
+                </div>
+                <div class="form-group inline">
+                    <label>From:</label>
+                    <input type="text" value="{{ current_user.username }}" readonly style="opacity:0.7;">
+                    <label style="margin-left: 10px;"><input type="checkbox" name="is_anonymous"> Anonymous</label>
+                </div>
+                <div class="form-group inline">
+                    <label>Date:</label>
+                    <span>{{ today_str }}</span>
+                </div>
+                <div class="form-group">
+                    <textarea name="content" placeholder="Write your letter here..." required style="width:100%; height:120px;"></textarea>
+                </div>
+                <button type="submit" style="padding: 8px 20px; font-weight: bold;">SEND</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Custom Stationery Modal -->
+    <div id="read-note-modal" class="modal-overlay" onclick="closeModalOnOuter('read-note-modal', event)">
+        <div class="letter-modal-paper" onclick="event.stopPropagation();">
+            <button class="close-letter-btn" onclick="closeModal('read-note-modal')">✕</button>
+
+            <div class="modal-field">
+                <label>To:</label>
+                <div id="modal-note-to" class="underline-value"></div>
+            </div>
+            <div class="modal-field">
+                <label>From:</label>
+                <div id="modal-note-from" class="underline-value"></div>
+                <div style="margin-left: 10px; font-size: 14px;">
+                    <input type="checkbox" id="modal-note-anon" disabled>
+                    <label for="modal-note-anon">Anonymous</label>
+                </div>
+            </div>
+            <div class="modal-field">
+                <label>Date:</label>
+                <div id="modal-note-date" class="underline-value"></div>
+            </div>
+            <div id="modal-note-body" class="modal-lined-body"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}?v=102"></script>
+    <script>
+        function openEnvelope(card) {
+            const toUser = card.getAttribute('data-to');
+            const fromUser = card.getAttribute('data-from');
+            const dateStr = card.getAttribute('data-date');
+            const bodyText = card.getAttribute('data-content');
+            const isAnon = card.getAttribute('data-anon') === 'true';
+
+            document.getElementById('modal-note-to').textContent = toUser;
+            document.getElementById('modal-note-from').textContent = isAnon ? '' : fromUser;
+            document.getElementById('modal-note-anon').checked = isAnon;
+            document.getElementById('modal-note-date').textContent = dateStr;
+            document.getElementById('modal-note-body').textContent = bodyText;
+            
+            openModal('read-note-modal');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Family Scrapbook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=25">
+</head>
+<body class="subpage-body">
+    <header class="auth-nav">
+        <button id="lang-toggle" class="lang-btn">한국어 / English</button>
+    </header>
+
+    <div class="subpage-container" style="max-width: 400px; text-align: center; margin-top: 80px;">
+        <h1 class="pane-title" data-kr="회원가입" data-en="Create Account">Create Account</h1>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <p style="color: red; margin-bottom: 15px;">{{ messages[0] }}</p>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/register" style="display: flex; flex-direction: column; gap: 15px;">
+            <input type="text" name="username" placeholder="Username (e.g. Mom, Dad, Sis)" required class="paper-input">
+            <input type="password" name="password" placeholder="Password" required class="paper-input">
+            <button type="submit" class="stamp-btn" data-kr="가입하기" data-en="REGISTER">REGISTER</button>
+        </form>
+        <p style="margin-top: 20px;"><a href="/login" style="color: #222;" data-kr="이미 계정이 있으신가요? 여기서 로그인하세요" data-en="Already have an account? Login here">Already have an account? Login here</a></p>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

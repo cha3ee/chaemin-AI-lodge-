@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리 가족 디지털 스크랩북 | Family Scrapbook</title>
+    <!-- Cache buster updated to ?v=16 to force full CSS refresh -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=16">
+</head>
+<body>
+
+    <!-- Language Toggle Header -->
+    <header class="top-nav home-nav">
+        {% if current_user.is_authenticated %}
+            <span class="user-chip">{{ current_user.username }}</span>
+            <a href="/logout" class="lang-btn" data-kr="로그아웃" data-en="Log out">Log out</a>
+        {% else %}
+            <a href="/login" class="lang-btn" data-kr="로그인" data-en="Log in">Log in</a>
+        {% endif %}
+        <button id="lang-toggle" class="lang-btn">한국어 / English</button>
+    </header>
+
+    <!-- Main Tabletop Canvas -->
+    <main class="picnic-canvas">
+
+        <!-- 1. Basket Item (Big, on the left) -->
+        <a href="/board" class="picnic-item basket-item" title="내 스크랩북 (My Mood Board)">
+            <img src="{{ url_for('static', filename='images/basket.png') }}" alt="Picnic Basket">
+            <span class="wrap-label label-basket" data-kr="내 바구니" data-en="my basket">my basket</span>
+        </a>
+
+        <!-- 2. Note Item (Tilted, near-center) -->
+        <a href="/notes" class="picnic-item note-item" title="가족 메모장 (Family Notes)">
+            <img src="{{ url_for('static', filename='images/note.png') }}" alt="Note">
+            <span class="wrap-label label-note" data-kr="메모장" data-en="notes">notes</span>
+        </a>
+
+        <!-- 3. Camera Item (Small, on top right mat area) -->
+        <a href="/photos" class="picnic-item camera-item" title="사진첩 (Photo Album)">
+            <img src="{{ url_for('static', filename='images/camera.png') }}" alt="Camera">
+            <span class="wrap-label label-camera" data-kr="사진첩" data-en="pictures">pictures</span>
+        </a>
+
+        <!-- 4. Radio Item (Bottom right) -->
+        <a href="/voice" class="picnic-item radio-item" title="음성 편지 (Voice Messages)">
+            <img src="{{ url_for('static', filename='images/radio.png') }}" alt="Radio">
+            <span class="wrap-label label-radio" data-kr="목소리 편지" data-en="voice message">voice message</span>
+        </a>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

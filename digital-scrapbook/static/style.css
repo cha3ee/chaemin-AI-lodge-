@@ -1,0 +1,1301 @@
+/* Custom Font Declaration for Garlic Bread */
+@font-face {
+    font-family: 'Garlic Bread';
+    src: local('Garlic Bread'), local('GarlicBread'), 
+         url('/static/fonts/GarlicBread.ttf') format('truetype'),
+         url('/static/fonts/GarlicBread.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   HOMEPAGE LANDING PAGE STYLING
+   ========================================================================== */
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    background: url('/static/images/background-and-mat.png') center/cover no-repeat #4a7c59;
+}
+
+/* Persistent Language Header */
+.top-nav {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.lang-btn {
+    background-color: #ffffff;
+    color: #222222;
+    border: 2px solid #222222;
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease;
+}
+
+.lang-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Screen Mat Canvas */
+.picnic-canvas {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+/* Interactive Items Wrapper */
+.picnic-item {
+    position: absolute;
+    display: inline-block;
+    text-decoration: none;
+    transition: transform 0.25s ease;
+}
+
+.picnic-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.15));
+}
+
+/* Base Handwritten Labels */
+.wrap-label {
+    position: absolute;
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-weight: 700;
+    color: #000000;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+    text-shadow: 
+        1px 1px 1px rgba(255, 255, 255, 0.9),
+       -1px -1px 1px rgba(255, 255, 255, 0.9);
+    transition: color 0.15s ease;
+    pointer-events: none;
+}
+
+/* --- HOMEPAGE ITEM POSITIONS & LABELS --- */
+
+.basket-item {
+    bottom: 16%;
+    left: -7%;
+    width: 47.5%;
+    transform: rotate(-9deg);
+}
+
+.label-basket {
+    top: 92%;
+    left: 50%;
+    transform: translateX(-50%) rotate(4.5deg);
+    font-size: 27.5px;
+}
+
+.note-item {
+    bottom: 4%;
+    left: 26%;
+    width: 33%;
+    transform: rotate(-12deg);
+}
+
+.label-note {
+    bottom: 98%;
+    margin-bottom: 1px;
+    left: 14%;
+    font-size: 26px;
+}
+
+.camera-item {
+    top: 50%;
+    right: 32%;
+    width: 11.6%;
+    transform: rotate(6deg);
+}
+
+.label-camera {
+    top: 98%;
+    margin-top: 2px;
+    right: 0%;
+    font-size: 24px;
+}
+
+.radio-item {
+    bottom: 9%;
+    right: 7%;
+    width: 20%;
+    transform: rotate(1deg);
+}
+
+.label-radio {
+    top: 98%;
+    margin-top: 2px;
+    left: 0%;
+    font-size: 23px;
+}
+
+.picnic-item:hover {
+    z-index: 20;
+}
+
+.basket-item:hover {
+    transform: scale(1.03) rotate(-9deg);
+}
+
+.note-item:hover {
+    transform: scale(1.04) rotate(-12deg);
+}
+
+.camera-item:hover {
+    transform: scale(1.05) rotate(6deg);
+}
+
+.radio-item:hover {
+    transform: scale(1.05) rotate(1deg);
+}
+
+.picnic-item:hover .wrap-label {
+    color: #cc0000;
+}
+
+/* ==========================================================================
+   SHARED SUBPAGE BASE STYLING
+   ========================================================================== */
+
+.subpage-body {
+    width: 100vw;
+    height: 100vh;
+    background-image: none;
+    background-color: #ffffff;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.subpage-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    position: relative;
+}
+
+.back-btn {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #222222;
+    text-decoration: none;
+    background: #ffffff;
+    border: 2px solid #222222;
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.back-btn:hover {
+    transform: scale(1.05);
+    background-color: #f0f0f0;
+}
+
+.subpage-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+/* ==========================================================================
+   NOTES SUBPAGE STYLING
+   ========================================================================== */
+
+.notes-page {
+    background-image: url('/static/images/notes-bg.png') !important;
+    background-color: #f1f6fc !important;
+    background-repeat: repeat;
+    background-size: contain;
+}
+
+.split-layout {
+    display: flex;
+    max-width: 1300px;
+    height: calc(100vh - 100px);
+    margin: 0 auto;
+    padding: 0 40px;
+    gap: 40px;
+}
+
+.left-pane, .right-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.pane-title {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: clamp(32px, 4vw, 56px);
+    color: #000000;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 
+        1px 1px 0 #fff,
+       -1px -1px 0 #fff;
+}
+
+.envelope-grid-container {
+    background: rgba(255, 255, 255, 0.4);
+    border: 3px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    padding: 24px;
+    overflow-y: auto;
+    flex-grow: 1;
+    margin-bottom: 20px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.envelope-grid-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.envelope-grid-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.envelope-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+.envelope-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1.45 / 1;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+    container-type: inline-size;
+}
+
+.envelope-card:hover {
+    transform: scale(1.05) rotate(1deg);
+}
+
+.envelope-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+.envelope-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(2px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    pointer-events: none;
+    text-align: center;
+    width: 82%;
+    box-sizing: border-box;
+}
+
+.sender-name {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: clamp(10px, 7.2cqw, 15px);
+    color: #222222;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 2px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.send-date {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: clamp(9px, 5.8cqw, 13px);
+    color: #444444;
+    line-height: 1.2;
+    width: 100%;
+    white-space: nowrap;
+}
+
+.favorite-heart {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: rgba(0, 0, 0, 0.3);
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.15s ease, transform 0.10s ease;
+    z-index: 5;
+}
+
+.favorite-heart:hover {
+    transform: scale(1.2);
+    color: #e23e3e;
+}
+
+.favorite-heart.favorited {
+    color: #e23e3e;
+    text-shadow: 0 0 4px rgba(226, 62, 62, 0.4);
+}
+
+.send-note-form {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+    padding: 40px 40px 40px 60px;
+    flex-grow: 1;
+    margin-bottom: 20px;
+    box-shadow: 
+        0px 10px 30px rgba(0, 0, 0, 0.06),
+        inset 0px 0px 40px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+}
+
+.paper-holes {
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.paper-holes span {
+    width: 14px;
+    height: 14px;
+    background: #eef2f6;
+    border-radius: 50%;
+    box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+}
+
+.form-group.inline {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-group label {
+    font-size: 22px;
+    font-weight: 700;
+    color: #222222;
+    white-space: nowrap;
+}
+
+.form-group input[type="text"] {
+    background: none;
+    border: none;
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 20px;
+    color: #000;
+    padding: 2px 4px;
+    width: 100%;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.15);
+}
+
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-bottom: 1px solid #000000;
+}
+
+.inline-sender {
+    position: relative;
+}
+
+.anon-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    margin-left: 20px;
+}
+
+.anon-check label {
+    font-size: 18px;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.anon-check input[type="checkbox"] {
+    transform: scale(1.15);
+    cursor: pointer;
+}
+
+.form-static-date {
+    font-size: 20px;
+    color: #333333;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.15);
+    padding: 2px 4px;
+}
+
+.note-content-group {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.note-content-group textarea {
+    width: 100%;
+    flex-grow: 1;
+    background: linear-gradient(rgba(0, 0, 0, 0) 95%, rgba(0, 0, 0, 0.08) 100%);
+    background-size: 100% 32px;
+    line-height: 32px;
+    border: none;
+    resize: none;
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 20px;
+    color: #222222;
+    padding: 0;
+}
+
+.note-content-group textarea:focus {
+    outline: none;
+}
+
+.send-stamp {
+    position: absolute;
+    bottom: 30px;
+    right: 40px;
+    background: none;
+    border: 3px solid #222222;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #222222;
+    text-transform: uppercase;
+    transform: rotate(-3deg);
+    cursor: pointer;
+    box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.15);
+    transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.send-stamp:hover {
+    transform: rotate(-1deg) scale(1.05);
+    background-color: rgba(0, 0, 0, 0.03);
+    color: #cc0000;
+    border-color: #cc0000;
+}
+
+/* ==========================================================================
+   PHOTOS SUBPAGE STYLING
+   ========================================================================== */
+
+.photos-page {
+    background-image: url('/static/images/photos-bg.jpg') !important;
+    background-color: #f7f5f0 !important;
+    background-repeat: repeat;
+    background-size: contain;
+}
+
+.photos-layout {
+    display: flex;
+    max-width: 1300px;
+    height: calc(100vh - 100px);
+    margin: 0 auto;
+    padding: 0 40px;
+    gap: 36px;
+}
+
+.photos-left-pane {
+    flex: 0 0 35%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.left-title-spacer {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.cards-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.action-card {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(4px);
+    border: 2px solid rgba(0, 0, 0, 0.12);
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    border-color: #222222;
+}
+
+.card-icon {
+    font-size: 38px;
+    margin-bottom: 12px;
+}
+
+.card-icon.text-icon {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #222222;
+}
+
+.action-card h2 {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 26px;
+    color: #222222;
+    margin-bottom: 8px;
+}
+
+.action-card p {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 16px;
+    color: #666666;
+    margin-bottom: 16px;
+}
+
+.click-badge {
+    display: inline-block;
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333333;
+    background: #ffffff;
+    border: 1.5px solid #222222;
+    padding: 6px 16px;
+    border-radius: 15px;
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.photos-right-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.gallery-wrapper {
+    background: rgba(255, 255, 255, 0.45);
+    border: 3px solid rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.polaroid-card {
+    position: relative;
+    background: #ffffff;
+    padding: 12px 12px 18px 12px;
+    border-radius: 4px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.polaroid-card:hover {
+    transform: scale(1.05) rotate(1.5deg);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+    z-index: 10;
+}
+
+.photo-frame {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f0f0f0;
+    overflow: hidden;
+    border-radius: 2px;
+    margin-bottom: 10px;
+}
+
+.photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.polaroid-caption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-align: center;
+}
+
+.photo-tag {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #222222;
+}
+
+.photo-date {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 13px;
+    color: #666666;
+}
+
+.gallery-nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed rgba(0, 0, 0, 0.12);
+}
+
+.arrow-btn {
+    background: #ffffff;
+    border: 2px solid #222222;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+    transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.arrow-btn:hover {
+    transform: scale(1.1);
+    background-color: #f0f0f0;
+}
+
+.page-indicator {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 18px;
+    color: #333333;
+}
+
+/* ==========================================================================
+   VOICE MESSAGES SUBPAGE STYLING
+   ========================================================================== */
+
+.voice-page {
+    background-image: url('/static/images/voice-bg.jpg') !important;
+    background-color: #fcf8f2 !important;
+    background-repeat: repeat;
+    background-size: contain;
+}
+
+.voice-layout {
+    display: flex;
+    max-width: 1300px;
+    height: calc(100vh - 100px);
+    margin: 0 auto;
+    padding: 0 40px;
+    gap: 36px;
+}
+
+.voice-left-pane {
+    flex: 0 0 35%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.voice-right-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.cassette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 20px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.cassette-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1.55 / 1;
+    cursor: pointer;
+    transition: transform 0.25s ease, filter 0.25s ease;
+    container-type: inline-size;
+}
+
+.cassette-card:hover {
+    transform: scale(1.05) rotate(1deg);
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
+}
+
+.cassette-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.12));
+}
+
+/* Navy Brown Text Badge on the bottom portion of cassette */
+.cassette-navy-badge {
+    position: absolute;
+    bottom: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    background: #2b221e; /* Deep Navy Brown fill */
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    text-align: center;
+    width: 78%;
+    box-sizing: border-box;
+}
+
+.cassette-sender {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: clamp(10px, 6.8cqw, 14px);
+    color: #ffffff; /* White text */
+    font-weight: 700;
+    line-height: 1.2;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cassette-date {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: clamp(9px, 5.5cqw, 12px);
+    color: #f0e8e0;
+    line-height: 1.2;
+    width: 100%;
+    white-space: nowrap;
+}
+
+/* Record straight in app toggle button */
+.record-direct-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 16px;
+    margin: 4px 0;
+}
+
+.record-toggle-btn {
+    background: #ffffff;
+    border: 2px solid #222222;
+    border-radius: 12px;
+    padding: 8px 16px;
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #222222;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.record-toggle-btn:hover {
+    transform: scale(1.03);
+    background-color: #f8f8f8;
+}
+
+.record-toggle-btn.recording {
+    background-color: #e23e3e;
+    color: #ffffff;
+    border-color: #e23e3e;
+    animation: pulseMic 1.2s infinite ease-in-out;
+}
+
+@keyframes pulseMic {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+}
+
+/* Player Lightbox Modal */
+.player-box {
+    max-width: 520px;
+    text-align: center;
+    padding: 32px 28px;
+}
+
+.player-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.player-cassette-frame {
+    width: 240px;
+    aspect-ratio: 1.55 / 1;
+}
+
+.player-cassette-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.player-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.player-sender-badge {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffffff;
+    background: #2b221e;
+    padding: 4px 16px;
+    border-radius: 12px;
+}
+
+.player-date-text {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 16px;
+    color: #666666;
+}
+
+/* ==========================================================================
+   BOARD / MY BASKET SUBPAGE STYLING
+   ========================================================================== */
+
+.board-page {
+    background-image: url('/static/images/board-bg.jpg') !important;
+    background-color: #c29b68 !important;
+    background-repeat: repeat;
+    background-size: cover;
+}
+
+.board-container {
+    max-width: 1300px;
+    height: calc(100vh - 100px);
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+/* ==========================================================================
+   MODAL POPUP STYLING & FULLSCREEN LIGHTBOX
+   ========================================================================== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-box {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px 36px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+    animation: modalPop 0.25s ease-out forwards;
+}
+
+@keyframes modalPop {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    font-weight: bold;
+    color: #666666;
+    cursor: pointer;
+}
+
+.close-modal-btn:hover {
+    color: #000000;
+}
+
+.modal-title {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 32px;
+    color: #222222;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.file-input {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 15px;
+}
+
+.paper-input {
+    background: none;
+    border: none;
+    border-bottom: 1.5px dashed rgba(0, 0, 0, 0.25);
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 18px;
+    padding: 4px 6px;
+    width: 100%;
+}
+
+.paper-input:focus {
+    outline: none;
+    border-bottom: 2px solid #222222;
+}
+
+.inline-row {
+    display: flex;
+    gap: 16px;
+}
+
+.inline-field {
+    flex: 1;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.stamp-btn {
+    align-self: center;
+    background: #ffffff;
+    border: 3px solid #222222;
+    padding: 8px 32px;
+    border-radius: 8px;
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #222222;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+    margin-top: 12px;
+    transition: transform 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.stamp-btn:hover {
+    transform: scale(1.05) rotate(-1deg);
+    color: #cc0000;
+    border-color: #cc0000;
+}
+
+.fullscreen-overlay {
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(8px);
+    padding: 0;
+}
+
+.fullscreen-close-btn {
+    position: fixed;
+    top: 24px;
+    right: 32px;
+    background: #ffffff;
+    border: 2px solid #222;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1010;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: transform 0.15s ease;
+}
+
+.fullscreen-close-btn:hover {
+    transform: scale(1.1);
+}
+
+.fullscreen-viewer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.fullscreen-media-box {
+    max-width: 85vw;
+    max-height: 72vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fullscreen-media-box img {
+    max-width: 100%;
+    max-height: 72vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    background: #ffffff;
+    padding: 10px;
+}
+
+.fullscreen-details {
+    margin-top: 18px;
+    text-align: center;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.fullscreen-badge {
+    display: inline-block;
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #222;
+    padding: 4px 14px;
+    background: #ffffff;
+    border-radius: 14px;
+}
+
+.fullscreen-caption {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 28px;
+    color: #ffffff;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+}
+
+.fullscreen-date {
+    font-family: 'Garlic Bread', 'GarlicBread', cursive, sans-serif;
+    font-size: 18px;
+    color: #dddddd;
+}
+
+.slider-arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #ffffff;
+    border: 2px solid #222;
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    font-size: 32px;
+    line-height: 44px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 1010;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.slider-arrow:hover {
+    transform: translateY(-50%) scale(1.1);
+    background: #f0f0f0;
+}
+
+.slider-prev { left: 32px; }
+.slider-next { right: 32px; }
+/* Home nav: login state next to the language toggle */
+.home-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.home-nav a.lang-btn {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.user-chip {
+    background: rgba(255, 255, 255, 0.85);
+    border: 2px solid #222222;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* Subpage nav: keep logout + language together on the right */
+.logout-btn {
+    margin-left: auto;
+    margin-right: 12px;
+    font-size: 16px;
+}
+
+/* Flash messages (upload success / errors) */
+.flash-banner {
+    max-width: 520px;
+    margin: 0 auto 10px auto;
+    padding: 10px 16px;
+    background: #fffbea;
+    border: 2px solid #222222;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 700;
+}
+
+/* Favorite heart on notes */
+.fav-btn-inline {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.fav-btn-inline:hover,
+.fav-btn-inline.active {
+    color: #e23e3e;
+}
+
+/* Login / register language toggle */
+.auth-nav {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+
+/* In-browser voice recorder */
+.recorder-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.record-btn {
+    background: #ffffff;
+    color: #d90429;
+    border: 2px solid #222222;
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.record-btn.recording {
+    background: #d90429;
+    color: #ffffff;
+    animation: record-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes record-pulse {
+    50% { opacity: 0.6; }
+}
+
+.record-timer {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+.record-preview {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.record-status {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #555;
+}
